@@ -1,0 +1,172 @@
+/* ==========================================
+   PAGES APP - ÖZEL BİLEŞEN STİLLERİ
+   ========================================== */
+
+/* 1. Biyografi (Bio) Bölümü */
+.bio-section {
+    background-color: #f7f3ee; /* Görseldeki yumuşak krem tonu */
+    overflow: hidden;
+}
+
+.profile-img-wrapper img {
+    border: 12px solid #ffffff; /* Fotoğraf etrafındaki beyaz çerçeve */
+    max-width: 450px;
+    width: 100%;
+    transition: all 0.5s ease;
+}
+
+.profile-img-wrapper img:hover {
+    transform: scale(1.03); /* Hafif büyüme efekti */
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15) !important;
+}
+
+.bio-text h1 {
+    color: #005a5a; /* Can Toğa ismi için petrol yeşili */
+    font-size: 3.5rem;
+    letter-spacing: -1px;
+}
+
+.bio-text h3 {
+    letter-spacing: 2px;
+    color: #666;
+}
+
+/* 2. Çalışma Alanları Bölümü */
+#calisma-alanlari {
+    background-color: #fcfaf8; /* Kartların altındaki çok hafif gri */
+}
+
+/* Başlık Altındaki Yeşil Çizgi */
+.header-line {
+    width: 60px;
+    height: 4px;
+    background-color: #005a5a; /* */
+    border-radius: 2px;
+    margin-top: 15px;
+}
+
+/* Modern Kart Tasarımı */
+.service-card {
+    background-color: #ffffff !important;
+    border-radius: 20px !important;
+    border: 1px solid #f0f0f0 !important;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Yaylanma efekti */
+}
+
+.service-card:hover {
+    transform: translateY(-12px); /* Yukarı kayma */
+    border-color: #005a5a !important;
+    box-shadow: 0 15px 30px rgba(0, 90, 90, 0.1) !important; /* Hafif yeşil gölge */
+}
+
+.service-card h5 {
+    color: #005a5a; /* Kart başlıkları yeşil */
+    margin-top: 10px;
+}
+
+.icon-box {
+    transition: transform 0.3s ease;
+}
+
+.service-card:hover .icon-box {
+    transform: scale(1.2) rotate(5deg); /* İkonun canlanması */
+}
+
+/* 3. Mobil Uyumluluk (Responsive) */
+@media (max-width: 991px) {
+    .bio-text {
+        text-align: center;
+        margin-top: 2rem;
+    }
+    
+    .bio-text h1 {
+        font-size: 2.5rem;
+    }
+
+    .profile-img-wrapper img {
+        max-width: 300px;
+    }
+}
+/* Hizmetler Sayfası Özel Stilleri */
+.service-detail-card {
+    border-radius: 15px;
+    overflow: hidden;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.service-detail-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 90, 90, 0.15) !important;
+}
+
+.card-img-wrapper {
+    height: 200px;
+    position: relative;
+    background-color: #005a5a; /* Senin yeşilin */
+}
+
+/* Kartların üstündeki gradyan efektleri (Görseldeki mantık) */
+.gradient-overlay {
+    height: 100%;
+    width: 100%;
+    background: linear-gradient(135deg, #005a5a 0%, #008080 100%);
+}
+
+.gradient-overlay.secondary {
+    background: linear-gradient(135deg, #004d4d 0%, #006666 100%);
+}
+
+.gradient-overlay.tertiary {
+    background: linear-gradient(135deg, #2d5a5a 0%, #4a7a7a 100%);
+}
+
+.max-w-700 {
+    max-width: 700px;
+}
+
+.header-line {
+    width: 50px;
+    height: 3px;
+    background-color: #005a5a;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.gallery-item {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    height: 100%;
+}
+
+.gallery-item img {
+    transition: transform 0.5s ease;
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+}
+
+.gallery-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 90, 90, 0.7); /* Senin yeşilin */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.gallery-item:hover img {
+    transform: scale(1.1);
+}
+
+.gallery-item:hover .gallery-overlay {
+    opacity: 1;
+}

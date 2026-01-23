@@ -1,0 +1,46 @@
+{% load static %}
+<section id="galeri-bolumu" class="py-5 bg-white">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold text-primary">GALERİ</h2>
+            <div class="header-line mx-auto"></div>
+        </div>
+
+        <div class="row g-3 gallery-grid">
+            <div class="col-lg-4 col-md-6">
+                <div class="gallery-item shadow-sm">
+                    <img src="{% static 'pages/img/ofis-1.jpg' %}" class="img-fluid rounded" alt="Ofis">
+                    <div class="gallery-overlay"><span>Ofisimiz</span></div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="gallery-item shadow-sm">
+                    <img src="{% static 'pages/img/psikolog.jpg' %}" class="img-fluid rounded" alt="Sertifika">
+                    <div class="gallery-overlay"><span>Katılım Belgesi</span></div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="gallery-item shadow-sm">
+                    <img src="{% static 'pages/img/sertfika.jpg' %}" class="img-fluid rounded" alt="Detay">
+                    <div class="gallery-overlay"><span>Seans Odası</span></div>
+                </div>
+            </div>
+
+            <div class="col-lg-8 col-md-12">
+                <div class="gallery-item shadow-sm">
+                    <img src="{% static 'pages/img/psikolog.jpg' %}" class="img-fluid rounded" alt="Sertifika">
+                    <div class="gallery-overlay"><span>Uzmanlık Eğitimi</span></div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+                <div class="gallery-item shadow-sm">
+                    <img src="{% static 'pages/img/psikolog.jpg' %}" class="img-fluid rounded" alt="Ofis">
+                    <div class="gallery-overlay"><span>Huzurlu Ortam</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

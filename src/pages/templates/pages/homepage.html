@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block page_title %}Anasayfa{% endblock page_title %}
+
+{% block css_files %}
+    <link rel="stylesheet" href="{% static 'pages/css/style.css' %}">
+{% endblock css_files %}
+
+{% block content %}
+
+{% include "pages/partials/_hero.html" %}
+{% include "pages/partials/_services.html" %}
+{% include "pages/partials/_about_summary.html" %}
+{% include "pages/partials/_gallery.html" %}
+
+{% endblock content %}

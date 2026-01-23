@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% load static %}
+{% block page_title %}Hizmetler{% endblock page_title %}
+
+{% block css_files %}
+    <link rel="stylesheet" href="{% static 'pages/css/style.css' %}">
+{% endblock css_files %}
+
+{% block content %}
+<section class="services-page py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold text-primary">Çalışma Alanları</h2>
+            <div class="header-line mx-auto"></div>
+            <p class="text-muted mt-3 max-w-700 mx-auto">
+                Psikolojik destek sürecinde ele alınabilecek temel konular aşağıda sunulmuştur. 
+                Her süreç danışanın ihtiyacına göre özel olarak yapılandırılır.
+            </p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4">
+                <div class="service-detail-card h-100 shadow-sm">
+                    <div class="card-img-wrapper">
+                        <div class="gradient-overlay d-flex align-items-center justify-content-center text-white p-4">
+                            <h4 class="fw-bold text-center">Kayıp ve Yas</h4>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-white">
+                        <h5 class="fw-bold text-primary mb-2">Kayıp ve Yas</h5>
+                        <p class="text-muted small">Zorlu yaşam olayları ve kayıp sonrası adaptasyon süreci üzerine profesyonel destek.</p>
+                        <a href="#" class="text-primary text-decoration-none fw-bold small">Detaylı Bilgi →</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="service-detail-card h-100 shadow-sm">
+                    <div class="card-img-wrapper">
+                        <div class="gradient-overlay secondary d-flex align-items-center justify-content-center text-white p-4">
+                            <h4 class="fw-bold text-center">Yaygın Anksiyete</h4>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-white">
+                        <h5 class="fw-bold text-primary mb-2">Yaygın Anksiyete</h5>
+                        <p class="text-muted small">Günlük hayatı etkileyen yoğun kaygı ve endişe durumlarının yönetimi.</p>
+                        <a href="#" class="text-primary text-decoration-none fw-bold small">Detaylı Bilgi →</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="service-detail-card h-100 shadow-sm">
+                    <div class="card-img-wrapper">
+                        <div class="gradient-overlay tertiary d-flex align-items-center justify-content-center text-white p-4">
+                            <h4 class="fw-bold text-center">İlişki Problemleri</h4>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-white">
+                        <h5 class="fw-bold text-primary mb-2">İlişki Problemleri</h5>
+                        <p class="text-muted small">Sağlıklı sınırlar çizme ve iletişim becerilerini geliştirme odaklı terapi.</p>
+                        <a href="#" class="text-primary text-decoration-none fw-bold small">Detaylı Bilgi →</a>
+                    </div>
+                </div>
+            </div>
+            
+            </div>
+    </div>
+</section>
+
+
+
+{% endblock content %}
