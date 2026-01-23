@@ -21,7 +21,7 @@
 }
 
 .bio-text h1 {
-    color: #005a5a; /* Can Toğa ismi için petrol yeşili */
+    color: #005a5a; /* isim için petrol yeşili */
     font-size: 3.5rem;
     letter-spacing: -1px;
 }
@@ -103,10 +103,10 @@
 .card-img-wrapper {
     height: 200px;
     position: relative;
-    background-color: #005a5a; /* Senin yeşilin */
+    background-color: #005a5a; 
 }
 
-/* Kartların üstündeki gradyan efektleri (Görseldeki mantık) */
+/* Kartların üstündeki gradyan efektleri*/
 .gradient-overlay {
     height: 100%;
     width: 100%;
@@ -153,7 +153,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 90, 90, 0.7); /* Senin yeşilin */
+    background: rgba(0, 90, 90, 0.7);
     display: flex;
     align-items: center;
     justify-content: center;

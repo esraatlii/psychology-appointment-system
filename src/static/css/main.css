@@ -3,7 +3,7 @@
    ========================================== */
 
 :root {
-    --primary-color: #005a5a;    /* İstediğin petrol yeşili */
+    --primary-color: #005a5a;    /* petrol yeşili */
     --primary-hover: #004444;    /* Hover durumundaki koyu yeşil */
     --bg-light: #fcfaf8;         /* Yumuşak arka plan rengi */
     --text-dark: #333333;
@@ -25,7 +25,7 @@ a {
     transition: all 0.3s ease;
 }
 
-/* 2. Özelleştirilmiş Navbar (Senin Yapına Uygun) */
+/* 2. Özelleştirilmiş Navbar  */
 .custom-navbar {
     background-color: rgba(255, 255, 255, 0.95) !important;
     backdrop-filter: blur(10px); /* Cam efekti */
