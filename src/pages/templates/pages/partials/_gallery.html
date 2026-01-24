@@ -1,46 +1,28 @@
 {% load static %}
 <section id="galeri-bolumu" class="py-5 bg-white">
-    <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="fw-bold text-primary">GALERİ</h2>
-            <div class="header-line mx-auto"></div>
-        </div>
-
-        <div class="row g-3 gallery-grid">
-            <div class="col-lg-4 col-md-6">
-                <div class="gallery-item shadow-sm">
-                    <img src="{% static 'pages/img/ofis-1.jpg' %}" class="img-fluid rounded" alt="Ofis">
-                    <div class="gallery-overlay"><span>Ofisimiz</span></div>
-                </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6">
-                <div class="gallery-item shadow-sm">
-                    <img src="{% static 'pages/img/psikolog.jpg' %}" class="img-fluid rounded" alt="Sertifika">
-                    <div class="gallery-overlay"><span>Katılım Belgesi</span></div>
-                </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6">
-                <div class="gallery-item shadow-sm">
-                    <img src="{% static 'pages/img/sertfika.jpg' %}" class="img-fluid rounded" alt="Detay">
-                    <div class="gallery-overlay"><span>Seans Odası</span></div>
-                </div>
-            </div>
-
-            <div class="col-lg-8 col-md-12">
-                <div class="gallery-item shadow-sm">
-                    <img src="{% static 'pages/img/psikolog.jpg' %}" class="img-fluid rounded" alt="Sertifika">
-                    <div class="gallery-overlay"><span>Uzmanlık Eğitimi</span></div>
-                </div>
-            </div>
-
-            <div class="col-lg-4 col-md-6">
-                <div class="gallery-item shadow-sm">
-                    <img src="{% static 'pages/img/psikolog.jpg' %}" class="img-fluid rounded" alt="Ofis">
-                    <div class="gallery-overlay"><span>Huzurlu Ortam</span></div>
-                </div>
-            </div>
-        </div>
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="fw-bold text-primary">GALERİ</h2>
+      <div class="header-line mx-auto"></div>
     </div>
+
+    <div class="row g-3 gallery-grid">
+
+      {% for img in images %}
+        <div class="col-lg-4 col-md-6">
+          <div class="gallery-item shadow-sm">
+            <img src="{{ img.image.url }}" class="img-fluid rounded" alt="{{ img.title|default:'Galeri' }}">
+            <div class="gallery-overlay">
+              <span>
+                {% if img.title %}{{ img.title }}{% else %}Galeri{% endif %}
+              </span>
+            </div>
+          </div>
+        </div>
+      {% empty %}
+        <p class="text-center text-muted">Henüz galeri görseli eklenmedi.</p>
+      {% endfor %}
+
+    </div>
+  </div>
 </section>

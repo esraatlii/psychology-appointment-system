@@ -4,13 +4,13 @@
         <div class="row align-items-center">
             <div class="col-lg-5 text-center mb-4 mb-lg-0">
                 <div class="profile-img-wrapper">
-                    <img src="{% static 'pages/img/psikolog.jpg' %}" alt="Klinik Psikolog Can Toğa" class="img-fluid rounded-circle shadow-lg">
+                    <img src="{{ psychologist.profile_image.url }}" alt="{{ psychologist.full_name }}" class="img-fluid rounded-circle shadow-lg">
                 </div>
             </div>
             
             <div class="col-lg-7 bio-text">
                 <h3 class="fw-bold text-secondary text-uppercase small">Klinik Psikolog</h3>
-                <h1 class="display-5 fw-bold text-primary mb-4">Ayşe Toğa</h1>
+                <h1 class="display-5 fw-bold text-primary mb-4">{{ psychologist.full_name }}</h1>
                 
                 <p class="lead text-muted">
                     <strong>Klinik Psikolog Ayşe Toğa</strong>, İstanbul Bilgi Üniversitesi Psikoloji lisans eğitiminin ardından 

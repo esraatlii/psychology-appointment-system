@@ -1,3 +1,5 @@
 from django.contrib import admin
+from .models import Psychologist,GalleryImage
 
-# Register your models here.
+admin.site.register(Psychologist)
+admin.site.register(GalleryImage)

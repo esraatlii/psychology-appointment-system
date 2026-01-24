@@ -1,13 +1,18 @@
 from django.http import HttpResponse
 from django.shortcuts import render
+from .models import Psychologist,GalleryImage
 
 # Create your views here.
 
 def homepage(request):
-    return render(request,'pages/homepage.html')
+    psychologist = Psychologist.objects.first()
+    images = GalleryImage.objects.all()
+    return render(request,'pages/homepage.html',
+                  {'psychologist': psychologist,'images':images}
+                  )
 
-def about(request):
-    return render(request,'pages/about.html')
+def aboutme(request):
+    return render(request,'pages/aboutme.html')
 
 def contact(request):
     return render(request,'pages/contact.html')
