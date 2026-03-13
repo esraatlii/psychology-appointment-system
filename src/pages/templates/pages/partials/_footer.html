@@ -1,0 +1,63 @@
+{% load static %}
+<footer class="py-5" style="background-color: #f7f3ee; border-top: 1px solid #e0e0e0;">
+    <div class="container">
+        <div class="text-center mb-5">
+            
+            <p class="mt-2 text-muted fw-bold">Psikolog & Uzm. Aile Danışmanı</p>
+            <hr class="max-w-700 mx-auto">
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <h5 class="fw-bold mb-4" style="color: #005a5a;">İletişim Bilgilerimiz</h5>
+                {% for psychologist in psychologists %}
+                <ul class="list-unstyled">
+                    <li class="d-flex mb-3">
+                        <i class="fas fa-map-marker-alt me-3 mt-1" style="color: #005a5a;"></i>
+                        <span class="small text-muted">{{psychologist.city}}</span>
+                    </li>
+                    <li class="d-flex mb-3 border-top pt-2">
+                        <i class="fas fa-mobile-alt me-3" style="color: #005a5a;"></i>
+                        <span class="small text-muted">{{psychologist.phone}}</span>
+                    </li>
+                    <li class="d-flex mb-3 border-top pt-2">
+                        <i class="fas fa-envelope me-3" style="color: #005a5a;"></i>
+                        <span class="small text-muted">{{psychologist.email}}</span>
+                    </li>
+                </ul>
+                {% endfor %}
+            </div>
+
+            <div class="col-lg-4 col-md-6 text-md-center">
+                <h5 class="fw-bold mb-4" style="color: #005a5a;">Hızlı Erişim</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="/" class="text-decoration-none text-muted small hover-green">Anasayfa</a></li>
+                    <li class="mb-2"><a href="{% url "aboutme" %}" class="text-decoration-none text-muted small hover-green">Hakkımda</a></li>
+                    <li class="mb-2"><a href="{% url "services" %}" class="text-decoration-none text-muted small hover-green">Çalışma Alanlarım</a></li>
+                    <li class="mb-2"><a href="#galeri-bolumu" class="text-decoration-none text-muted small hover-green">Galeri</a></li>
+                    <li class="mb-2"><a href="{% url "contact" %}" class="text-decoration-none text-muted small hover-green">İletişim</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-4">
+                <h5 class="fw-bold mb-4 text-lg-end" style="color: #005a5a;">Çalışma Saatlerimiz</h5>
+                {% for wh in working_hours %}
+                <div class="small text-muted">
+                    <div class="d-flex justify-content-between mb-2 border-bottom pb-1">
+                        <span>{{wh.get_day_display}}:</span>
+                        {% if wh.is_closed %}
+                            <span class="text-danger">Kapalı</span>
+                        {% elif wh.open_time and wh.close_time %}
+                            {{ wh.open_time|time:"H:i" }} - {{ wh.close_time|time:"H:i" }}
+                        {% else %}
+                            <span class="text-danger">Kapalı</span>
+                        {% endif %}
+
+                    </div>
+                    
+                </div>
+          {% endfor %}
+            </div>
+        </div>
+    </div>
+</footer>

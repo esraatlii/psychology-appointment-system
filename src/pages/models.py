@@ -104,4 +104,61 @@ class GalleryImage(models.Model):
         return f"Galeri Görseli #{self.id}"
 
 class Education(models.Model):
-    university_name = models.CharField(max_length=50,verbose_name="Üniversite Adı")
+    title = models.CharField(verbose_name="Başlık",null=True)
+    education = models.CharField(max_length=100,verbose_name="Eğitimler ve Sertfikalar",null=True)
+    
+    class Meta:
+        verbose_name = "Eğitimler ve Sertfikalar"
+        verbose_name_plural = "Eğitim ve Sertfika"
+
+    
+    def __str__(self):
+        if self.title:
+            return self.title
+        return f"Eğitim ve Sertfika #{self.id}"    
+    
+class Workspaces(models.Model):
+    title = models.CharField(verbose_name="Çalışma Alanı",blank=True)
+    definition = models.CharField(verbose_name="Tanım",blank=True)
+
+    class Meta:
+        verbose_name = "Calışma Alanları"
+        verbose_name_plural = "Çalışma Alanı"
+
+    def __str__(self):
+        if self.title:
+            return self.title
+        return f"Çalışma Alanı #{self.id}"     
+
+class WorkingHours(models.Model):
+    DAY_CHOICES = [
+        (0,"Pazartesi"),
+        (1,"Salı"),
+        (2,"Çarşamba"),
+        (3,"Perşembe"),
+        (4,"Cuma"),
+        (5,"Cumartesi"),
+        (6,"Pazar"),
+    ]
+
+    day = models.IntegerField(verbose_name="Gün",choices=DAY_CHOICES)
+    open_time = models.TimeField(verbose_name="Açılış saati",null=True,blank=True)
+    close_time = models.TimeField(verbose_name="Kapanış saati",null=True,blank=True)
+    is_closed = models.BooleanField(verbose_name="Kapalı",default=False) 
+
+    class Meta:
+        verbose_name = "Çalışma Saatleri"
+        verbose_name_plural = "Çalışma Saati"
+        ordering = ["day"]
+        constraints = [
+            models.UniqueConstraint(fields=["day"],name="unique_working_day")
+        ]
+
+    def is_open(self):
+        return (not self.is_closed) and (self.open_time is not None) and (self.close_time is not None)
+
+
+    def __str__(self):
+        return self.get_day_display()
+        
+           

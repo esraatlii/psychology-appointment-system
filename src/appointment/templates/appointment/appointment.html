@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+  body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+  .time-slot:hover { background-color: #3b82f6; color: white; transform: translateY(-2px); }
+  .time-slot.selected { background-color: #1e40af; color: white; border-color: #1e40af; }
+</style>
+
+<div class="py-10 px-4">
+  <div class="max-w-4xl mx-auto bg-white shadow-xl rounded-2xl overflow-hidden">
+    <div class="md:flex">
+      <div class="md:w-1/3 bg-indigo-600 p-8 text-white">
+        <h2 class="text-2xl font-bold mb-4">Randevu Oluştur</h2>
+        <p class="text-indigo-100 mb-6">Size en uygun zamanı seçerek seansınızı hemen planlayabilirsiniz.</p>
+        <ul class="space-y-4 text-sm">
+          <li class="flex items-center">✅ Seans süresi: 60 Dakika</li>
+          <li class="flex items-center">✅ Çalışma saatleri: 09:00 - 19:00</li>
+          <li class="flex items-center">✅ Güvenli ve gizli görüşme</li>
+        </ul>
+      </div>
+
+      <div class="md:w-2/3 p-8">
+        <form method="POST" class="space-y-6" novalidate>
+          {% csrf_token %}
+
+          {# Form genel hataları (clean() ile atılanlar) #}
+          {% if form.non_field_errors %}
+            <div class="rounded-lg bg-red-50 text-red-700 px-4 py-3">
+              {{ form.non_field_errors }}
+            </div>
+          {% endif %}
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Ad Soyad</label>
+              <input
+                type="text"
+                name="full_name"
+                value="{{ form.full_name.value|default_if_none:'' }}"
+                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 bg-gray-50 focus:ring-indigo-500 border"
+                placeholder="Adınız Soyadınız"
+                required
+              >
+              {% if form.full_name.errors %}
+                <p class="text-sm text-red-600 mt-1">{{ form.full_name.errors }}</p>
+              {% endif %}
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700">Telefon</label>
+              <input
+                type="text"
+                name="phone"
+                value="{{ form.phone.value|default_if_none:'' }}"
+                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 bg-gray-50 focus:ring-indigo-500 border"
+                placeholder="05xx xxx xx xx"
+                required
+              >
+              {% if form.phone.errors %}
+                <p class="text-sm text-red-600 mt-1">{{ form.phone.errors }}</p>
+              {% endif %}
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700">E-posta (Opsiyonel)</label>
+            <input
+              type="email"
+              name="email"
+              value="{{ form.email.value|default_if_none:'' }}"
+              class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 bg-gray-50 focus:ring-indigo-500 border"
+              placeholder="ornek@mail.com"
+            >
+            {% if form.email.errors %}
+              <p class="text-sm text-red-600 mt-1">{{ form.email.errors }}</p>
+            {% endif %}
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Tarih Seçin</label>
+            <input
+              type="date"
+              name="date"
+              value="{{ form.date.value|default_if_none:'' }}"
+              class="block w-full border-gray-300 rounded-md shadow-sm p-2 bg-gray-50 border focus:ring-indigo-500"
+              required
+              id="appointment-date"
+            >
+            {% if form.date.errors %}
+              <p class="text-sm text-red-600 mt-1">{{ form.date.errors }}</p>
+            {% endif %}
+          </div>
+
+          {# start_time gizli: butonlar burayı dolduracak #}
+          <input type="hidden" name="start_time" id="start_time_input" value="{{ form.start_time.value|default_if_none:'' }}">
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-3">Müsait Saatler</label>
+
+            <div class="grid grid-cols-3 sm:grid-cols-4 gap-2" id="time-slots">
+              {# Şimdilik statik saatler (sonra DB’den dinamik yaparız) #}
+              {% for t in timeslots %}
+                <button
+                  type="button"
+                  class="time-slot border border-gray-200 py-2 rounded-lg text-sm transition-all duration-200 text-gray-600"
+                  data-time="{{ t }}"
+                >
+                  {{ t }}
+                </button>
+              {% endfor %}
+            </div>
+
+            {# start_time field hatası varsa #}
+            {% if form.start_time.errors %}
+              <p class="text-sm text-red-600 mt-2">{{ form.start_time.errors }}</p>
+            {% endif %}
+
+            <p class="text-xs text-gray-500 mt-2">
+              Saat seçmek için yukarıdaki butonlardan birine tıklayın.
+            </p>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700">Eklemek İstediğiniz Not (Opsiyonel)</label>
+            <textarea
+              name="note"
+              rows="3"
+              class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 bg-gray-50 border focus:ring-indigo-500"
+              placeholder="(Opsiyonel)"
+            >{{ form.note.value|default_if_none:'' }}</textarea>
+
+            {% if form.note.errors %}
+              <p class="text-sm text-red-600 mt-1">{{ form.note.errors }}</p>
+            {% endif %}
+          </div>
+
+          <button
+            type="submit"
+            class="w-full bg-indigo-600 text-white font-bold py-3 rounded-xl hover:bg-indigo-700 transition duration-300 shadow-lg shadow-indigo-200"
+          >
+            Randevuyu Onayla
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const slots = document.querySelectorAll('#time-slots .time-slot');
+  const hiddenInput = document.getElementById('start_time_input');
+
+  function markSelected(value) {
+    slots.forEach(s => s.classList.remove('selected'));
+    const btn = Array.from(slots).find(s => s.dataset.time === value);
+    if (btn) btn.classList.add('selected');
+  }
+
+  // Sayfa yeniden yüklenince (hata sonrası) seçili saati koru
+  if (hiddenInput.value) {
+    // hiddenInput.value "10:00:00" gibi gelebilir, "10:00"e kırp
+    const v = hiddenInput.value.slice(0, 5);
+    markSelected(v);
+    hiddenInput.value = v;
+  }
+
+  slots.forEach(slot => {
+    slot.addEventListener('click', () => {
+      const value = slot.dataset.time; // "10:00"
+      hiddenInput.value = value;
+      markSelected(value);
+    });
+  });
+</script>
+
+{% endblock content %}
+ 

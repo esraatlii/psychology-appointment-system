@@ -17,53 +17,25 @@
                 Her süreç danışanın ihtiyacına göre özel olarak yapılandırılır.
             </p>
         </div>
-
+        
         <div class="row g-4">
+            {% for workspace in workspaces %}
             <div class="col-md-6 col-lg-4">
+                
                 <div class="service-detail-card h-100 shadow-sm">
                     <div class="card-img-wrapper">
                         <div class="gradient-overlay d-flex align-items-center justify-content-center text-white p-4">
-                            <h4 class="fw-bold text-center">Kayıp ve Yas</h4>
+                            <h4 class="fw-bold text-center">{{workspace.title}}</h4>
                         </div>
                     </div>
                     <div class="p-4 bg-white">
-                        <h5 class="fw-bold text-primary mb-2">Kayıp ve Yas</h5>
-                        <p class="text-muted small">Zorlu yaşam olayları ve kayıp sonrası adaptasyon süreci üzerine profesyonel destek.</p>
+                        <h5 class="fw-bold text-primary mb-2">{{workspace.title}}</h5>
+                        <p class="text-muted small">{{workspace.definition}}</p>
                         <a href="#" class="text-primary text-decoration-none fw-bold small">Detaylı Bilgi →</a>
                     </div>
                 </div>
             </div>
-
-            <div class="col-md-6 col-lg-4">
-                <div class="service-detail-card h-100 shadow-sm">
-                    <div class="card-img-wrapper">
-                        <div class="gradient-overlay secondary d-flex align-items-center justify-content-center text-white p-4">
-                            <h4 class="fw-bold text-center">Yaygın Anksiyete</h4>
-                        </div>
-                    </div>
-                    <div class="p-4 bg-white">
-                        <h5 class="fw-bold text-primary mb-2">Yaygın Anksiyete</h5>
-                        <p class="text-muted small">Günlük hayatı etkileyen yoğun kaygı ve endişe durumlarının yönetimi.</p>
-                        <a href="#" class="text-primary text-decoration-none fw-bold small">Detaylı Bilgi →</a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6 col-lg-4">
-                <div class="service-detail-card h-100 shadow-sm">
-                    <div class="card-img-wrapper">
-                        <div class="gradient-overlay tertiary d-flex align-items-center justify-content-center text-white p-4">
-                            <h4 class="fw-bold text-center">İlişki Problemleri</h4>
-                        </div>
-                    </div>
-                    <div class="p-4 bg-white">
-                        <h5 class="fw-bold text-primary mb-2">İlişki Problemleri</h5>
-                        <p class="text-muted small">Sağlıklı sınırlar çizme ve iletişim becerilerini geliştirme odaklı terapi.</p>
-                        <a href="#" class="text-primary text-decoration-none fw-bold small">Detaylı Bilgi →</a>
-                    </div>
-                </div>
-            </div>
-            
+             {% endfor %}
             </div>
     </div>
 </section>
