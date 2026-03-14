@@ -1,182 +1,660 @@
 {% extends "base.html" %}
 {% load static %}
-{% block content %}
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com"></script>
+{% block page_title %}Randevu Al{% endblock page_title %}
 
+{% block css_files %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 <style>
-  body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
-  .time-slot:hover { background-color: #3b82f6; color: white; transform: translateY(-2px); }
-  .time-slot.selected { background-color: #1e40af; color: white; border-color: #1e40af; }
+  :root {
+    --primary: #0d9488;
+    --primary-dark: #0f766e;
+    --primary-light: #f0fdfa;
+    --success: #059669;
+    --danger: #dc2626;
+    --slot-available: #f0fdf4;
+    --slot-border: #99f6e4;
+    --slot-booked: #fef2f2;
+    --slot-booked-border: #fecaca;
+  }
+
+  /* ── Genel sayfa ── */
+  .appointment-wrapper {
+    min-height: 100vh;
+    background: #f8f9fa;
+    padding: 3rem 0;
+  }
+
+  /* ── Kart ── */
+  .appt-card {
+    border: none;
+    border-radius: 1.5rem;
+    box-shadow: 0 20px 60px rgba(79,70,229,.10), 0 4px 20px rgba(0,0,0,.06);
+    overflow: hidden;
+  }
+
+  /* ── Sol panel ── */
+  .appt-sidebar {
+    background: linear-gradient(160deg, #0d9488 0%, #0f766e 100%);
+    padding: 2.5rem 2rem;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+  .appt-sidebar::before {
+    content: "";
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.07);
+  }
+  .appt-sidebar::after {
+    content: "";
+    position: absolute;
+    bottom: -40px; left: -40px;
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.05);
+  }
+  .appt-sidebar h2 { font-size: 1.6rem; font-weight: 700; }
+  .appt-sidebar p  { opacity: .85; font-size: .92rem; }
+
+  .info-item {
+    display: flex;
+    align-items: flex-start;
+    gap: .75rem;
+    margin-bottom: 1rem;
+  }
+  .info-icon {
+    width: 36px; height: 36px;
+    background: rgba(255,255,255,.15);
+    border-radius: .6rem;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-size: 1rem;
+  }
+  .info-text { font-size: .85rem; line-height: 1.5; opacity: .9; }
+  .info-text strong { display: block; opacity: 1; font-weight: 600; }
+
+  /* ── Sağ form ── */
+  .appt-form { padding: 2.5rem 2rem; }
+
+  .form-section-title {
+    font-size: .7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    color: #0d9488;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+  }
+  .form-section-title::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #99f6e4;
+  }
+
+  .form-control, .form-select {
+    border: 1.5px solid #e5e7eb;
+    border-radius: .75rem;
+    padding: .6rem 1rem;
+    font-size: .9rem;
+    transition: border-color .2s, box-shadow .2s;
+    background: #fafbff;
+  }
+  .form-control:focus {
+    border-color: #0d9488;
+    box-shadow: 0 0 0 3px rgba(13,148,136,.12);
+    background: #fff;
+  }
+
+  /* ── Takvim ── */
+  .calendar-wrapper {
+    background: #fff;
+    border: 1.5px solid #99f6e4;
+    border-radius: 1rem;
+    overflow: hidden;
+  }
+  .calendar-header {
+    background: #f0fdfa;
+    padding: .75rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .calendar-header .month-label {
+    font-weight: 700;
+    color: var(--primary-dark);
+    font-size: .95rem;
+  }
+  .cal-nav-btn {
+    background: none;
+    border: none;
+    color: #0d9488;
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: .25rem .5rem;
+    border-radius: .4rem;
+    transition: background .15s;
+  }
+  .cal-nav-btn:hover { background: #ccfbf1; }
+
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    padding: .75rem;
+  }
+  .cal-day-name {
+    text-align: center;
+    font-size: .7rem;
+    font-weight: 700;
+    color: #9ca3af;
+    text-transform: uppercase;
+    padding: .25rem 0 .5rem;
+  }
+  .cal-day {
+    text-align: center;
+    padding: .45rem .25rem;
+    border-radius: .5rem;
+    font-size: .85rem;
+    cursor: pointer;
+    transition: all .15s;
+    border: 1.5px solid transparent;
+    color: #374151;
+    font-weight: 500;
+    position: relative;
+  }
+  .cal-day:hover:not(.disabled):not(.empty) {
+    background: #f0fdfa;
+    border-color: #5eead4;
+    color: #0f766e;
+  }
+  .cal-day.today {
+    background: #ccfbf1;
+    border-color: #5eead4;
+    color: #0f766e;
+    font-weight: 700;
+  }
+  .cal-day.selected {
+    background: var(--primary) !important;
+    border-color: var(--primary) !important;
+    color: #fff !important;
+    font-weight: 700;
+  }
+  .cal-day.disabled {
+    color: #d1d5db;
+    cursor: not-allowed;
+    text-decoration: line-through;
+  }
+  .cal-day.closed {
+    color: #fca5a5;
+    cursor: not-allowed;
+    background: #fff5f5;
+  }
+  .cal-day.empty { cursor: default; }
+
+  /* ── Saat Grid ── */
+  #slots-wrapper { min-height: 80px; }
+
+  .slots-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: .5rem;
+  }
+  @media (max-width: 400px) { .slots-grid { grid-template-columns: repeat(3,1fr); } }
+
+  .slot-btn {
+    padding: .5rem .25rem;
+    border-radius: .6rem;
+    font-size: .82rem;
+    font-weight: 600;
+    border: 1.5px solid;
+    cursor: pointer;
+    transition: all .18s;
+    text-align: center;
+  }
+  .slot-btn.available {
+    background: var(--slot-available);
+    border-color: var(--slot-border);
+    color: #065f46;
+  }
+  .slot-btn.available:hover {
+    background: #bbf7d0;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(5,150,105,.15);
+  }
+  .slot-btn.available.selected {
+    background: var(--success);
+    border-color: var(--success);
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(5,150,105,.3);
+  }
+  .slot-btn.booked {
+    background: var(--slot-booked);
+    border-color: var(--slot-booked-border);
+    color: #b91c1c;
+    cursor: not-allowed;
+    opacity: .7;
+    text-decoration: line-through;
+  }
+
+  .slots-message {
+    text-align: center;
+    padding: 1.5rem;
+    color: #9ca3af;
+    font-size: .88rem;
+    border: 1.5px dashed #e5e7eb;
+    border-radius: .75rem;
+  }
+  .slots-loading {
+    text-align: center;
+    padding: 1.5rem;
+    color: var(--primary);
+    font-size: .88rem;
+  }
+
+  /* ── Legend ── */
+  .slot-legend {
+    display: flex;
+    gap: 1.2rem;
+    font-size: .75rem;
+    color: #6b7280;
+    margin-top: .5rem;
+  }
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 3px;
+    display: inline-block;
+    margin-right: 4px;
+  }
+
+  /* ── Submit ── */
+  .btn-submit {
+    background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+    border: none;
+    border-radius: .85rem;
+    padding: .85rem 1.5rem;
+    font-weight: 700;
+    font-size: 1rem;
+    letter-spacing: .02em;
+    transition: transform .2s, box-shadow .2s;
+    box-shadow: 0 4px 15px rgba(13,148,136,.35);
+  }
+  .btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(13,148,136,.4);
+  }
+
+  /* ── Alert ── */
+  .alert-custom {
+    border-radius: .75rem;
+    font-size: .88rem;
+    border: none;
+  }
+
+  /* Responsive */
+  @media (max-width: 767px) {
+    .appt-sidebar { padding: 2rem 1.5rem; }
+    .appt-form    { padding: 2rem 1.5rem; }
+  }
 </style>
+{% endblock css_files %}
 
-<div class="py-10 px-4">
-  <div class="max-w-4xl mx-auto bg-white shadow-xl rounded-2xl overflow-hidden">
-    <div class="md:flex">
-      <div class="md:w-1/3 bg-indigo-600 p-8 text-white">
-        <h2 class="text-2xl font-bold mb-4">Randevu Oluştur</h2>
-        <p class="text-indigo-100 mb-6">Size en uygun zamanı seçerek seansınızı hemen planlayabilirsiniz.</p>
-        <ul class="space-y-4 text-sm">
-          <li class="flex items-center">✅ Seans süresi: 60 Dakika</li>
-          <li class="flex items-center">✅ Çalışma saatleri: 09:00 - 19:00</li>
-          <li class="flex items-center">✅ Güvenli ve gizli görüşme</li>
-        </ul>
-      </div>
+{% block content %}
+<div class="appointment-wrapper">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-12 col-xl-10">
 
-      <div class="md:w-2/3 p-8">
-        <form method="POST" class="space-y-6" novalidate>
-          {% csrf_token %}
+        <div class="appt-card card">
+          <div class="row g-0">
 
-          {# Form genel hataları (clean() ile atılanlar) #}
-          {% if form.non_field_errors %}
-            <div class="rounded-lg bg-red-50 text-red-700 px-4 py-3">
-              {{ form.non_field_errors }}
+            {# ── Sol Panel ── #}
+            <div class="col-md-4 appt-sidebar">
+              <h2 class="mb-2"><i class="bi bi-calendar-heart me-2"></i>Randevu Al</h2>
+              <p class="mb-4">Size en uygun zamanı seçerek seansınızı hemen planlayabilirsiniz.</p>
+
+              <div class="info-item">
+                <div class="info-icon"><i class="bi bi-clock"></i></div>
+                <div class="info-text"><strong>Seans Süresi</strong>60 dakika</div>
+              </div>
+              <div class="info-item">
+                <div class="info-icon"><i class="bi bi-shield-check"></i></div>
+                <div class="info-text"><strong>Güvenli & Gizli</strong>Tüm görüşmeler gizlidir</div>
+              </div>
+              <div class="info-item">
+                <div class="info-icon"><i class="bi bi-laptop"></i></div>
+                <div class="info-text"><strong>Online & Yüz Yüze</strong>Her iki seçenek mevcut</div>
+              </div>
+              <div class="info-item">
+                <div class="info-icon"><i class="bi bi-check2-circle"></i></div>
+                <div class="info-text"><strong>Hızlı Onay</strong>Admin onayı ile randevunuz netleşir</div>
+              </div>
+
+              <hr class="border-white opacity-25 my-4">
+
+              <div class="d-flex align-items-center gap-2">
+                <span class="badge rounded-pill px-3 py-2" style="background:rgba(255,255,255,.2)">
+                  <i class="bi bi-info-circle me-1"></i> Dolu saatleri seçemezsiniz
+                </span>
+              </div>
             </div>
-          {% endif %}
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-sm font-medium text-gray-700">Ad Soyad</label>
-              <input
-                type="text"
-                name="full_name"
-                value="{{ form.full_name.value|default_if_none:'' }}"
-                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 bg-gray-50 focus:ring-indigo-500 border"
-                placeholder="Adınız Soyadınız"
-                required
-              >
-              {% if form.full_name.errors %}
-                <p class="text-sm text-red-600 mt-1">{{ form.full_name.errors }}</p>
-              {% endif %}
-            </div>
+            {# ── Sağ Form ── #}
+            <div class="col-md-8 appt-form">
 
-            <div>
-              <label class="block text-sm font-medium text-gray-700">Telefon</label>
-              <input
-                type="text"
-                name="phone"
-                value="{{ form.phone.value|default_if_none:'' }}"
-                class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 bg-gray-50 focus:ring-indigo-500 border"
-                placeholder="05xx xxx xx xx"
-                required
-              >
-              {% if form.phone.errors %}
-                <p class="text-sm text-red-600 mt-1">{{ form.phone.errors }}</p>
-              {% endif %}
-            </div>
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-gray-700">E-posta (Opsiyonel)</label>
-            <input
-              type="email"
-              name="email"
-              value="{{ form.email.value|default_if_none:'' }}"
-              class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 bg-gray-50 focus:ring-indigo-500 border"
-              placeholder="ornek@mail.com"
-            >
-            {% if form.email.errors %}
-              <p class="text-sm text-red-600 mt-1">{{ form.email.errors }}</p>
-            {% endif %}
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Tarih Seçin</label>
-            <input
-              type="date"
-              name="date"
-              value="{{ form.date.value|default_if_none:'' }}"
-              class="block w-full border-gray-300 rounded-md shadow-sm p-2 bg-gray-50 border focus:ring-indigo-500"
-              required
-              id="appointment-date"
-            >
-            {% if form.date.errors %}
-              <p class="text-sm text-red-600 mt-1">{{ form.date.errors }}</p>
-            {% endif %}
-          </div>
-
-          {# start_time gizli: butonlar burayı dolduracak #}
-          <input type="hidden" name="start_time" id="start_time_input" value="{{ form.start_time.value|default_if_none:'' }}">
-
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-3">Müsait Saatler</label>
-
-            <div class="grid grid-cols-3 sm:grid-cols-4 gap-2" id="time-slots">
-              {# Şimdilik statik saatler (sonra DB’den dinamik yaparız) #}
-              {% for t in timeslots %}
-                <button
-                  type="button"
-                  class="time-slot border border-gray-200 py-2 rounded-lg text-sm transition-all duration-200 text-gray-600"
-                  data-time="{{ t }}"
-                >
-                  {{ t }}
-                </button>
+              {# Flash mesajlar #}
+              {% for message in messages %}
+                <div class="alert alert-custom alert-{{ message.tags }} alert-dismissible fade show mb-4" role="alert">
+                  <i class="bi bi-{% if message.tags == 'success' %}check-circle{% else %}exclamation-circle{% endif %} me-2"></i>
+                  {{ message }}
+                  <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
               {% endfor %}
-            </div>
 
-            {# start_time field hatası varsa #}
-            {% if form.start_time.errors %}
-              <p class="text-sm text-red-600 mt-2">{{ form.start_time.errors }}</p>
-            {% endif %}
+              <form method="POST" novalidate id="appointment-form">
+                {% csrf_token %}
 
-            <p class="text-xs text-gray-500 mt-2">
-              Saat seçmek için yukarıdaki butonlardan birine tıklayın.
-            </p>
-          </div>
+                {% if form.non_field_errors %}
+                  <div class="alert alert-custom alert-danger mb-4">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    {{ form.non_field_errors }}
+                  </div>
+                {% endif %}
 
-          <div>
-            <label class="block text-sm font-medium text-gray-700">Eklemek İstediğiniz Not (Opsiyonel)</label>
-            <textarea
-              name="note"
-              rows="3"
-              class="mt-1 block w-full border-gray-300 rounded-md shadow-sm p-2 bg-gray-50 border focus:ring-indigo-500"
-              placeholder="(Opsiyonel)"
-            >{{ form.note.value|default_if_none:'' }}</textarea>
+                {# ── Kişisel Bilgiler ── #}
+                <div class="form-section-title">
+                  <i class="bi bi-person"></i> Kişisel Bilgiler
+                </div>
 
-            {% if form.note.errors %}
-              <p class="text-sm text-red-600 mt-1">{{ form.note.errors }}</p>
-            {% endif %}
-          </div>
+                <div class="row g-3 mb-3">
+                  <div class="col-sm-6">
+                    <label class="form-label fw-semibold small">Ad Soyad <span class="text-danger">*</span></label>
+                    <input type="text" name="full_name"
+                           value="{{ form.full_name.value|default_if_none:'' }}"
+                           class="form-control {% if form.full_name.errors %}is-invalid{% endif %}"
+                           placeholder="Adınız Soyadınız">
+                    {% if form.full_name.errors %}
+                      <div class="invalid-feedback">{{ form.full_name.errors.0 }}</div>
+                    {% endif %}
+                  </div>
+                  <div class="col-sm-6">
+                    <label class="form-label fw-semibold small">Telefon <span class="text-danger">*</span></label>
+                    <input type="text" name="phone"
+                           value="{{ form.phone.value|default_if_none:'' }}"
+                           class="form-control {% if form.phone.errors %}is-invalid{% endif %}"
+                           placeholder="05xx xxx xx xx">
+                    {% if form.phone.errors %}
+                      <div class="invalid-feedback">{{ form.phone.errors.0 }}</div>
+                    {% endif %}
+                  </div>
+                </div>
 
-          <button
-            type="submit"
-            class="w-full bg-indigo-600 text-white font-bold py-3 rounded-xl hover:bg-indigo-700 transition duration-300 shadow-lg shadow-indigo-200"
-          >
-            Randevuyu Onayla
-          </button>
-        </form>
+                <div class="mb-4">
+                  <label class="form-label fw-semibold small">E-posta <span class="text-muted">(opsiyonel)</span></label>
+                  <input type="email" name="email"
+                         value="{{ form.email.value|default_if_none:'' }}"
+                         class="form-control {% if form.email.errors %}is-invalid{% endif %}"
+                         placeholder="ornek@mail.com">
+                  {% if form.email.errors %}
+                    <div class="invalid-feedback">{{ form.email.errors.0 }}</div>
+                  {% endif %}
+                </div>
+
+                {# ── Tarih Seçimi ── #}
+                <div class="form-section-title">
+                  <i class="bi bi-calendar3"></i> Tarih Seçin
+                </div>
+
+                <div class="mb-4">
+                  <div class="calendar-wrapper">
+                    <div class="calendar-header">
+                      <button type="button" class="cal-nav-btn" id="prev-month">
+                        <i class="bi bi-chevron-left"></i>
+                      </button>
+                      <span class="month-label" id="month-label"></span>
+                      <button type="button" class="cal-nav-btn" id="next-month">
+                        <i class="bi bi-chevron-right"></i>
+                      </button>
+                    </div>
+                    <div class="calendar-grid" id="calendar-grid"></div>
+                  </div>
+
+                  <input type="hidden" name="date" id="selected-date-input"
+                         value="{{ form.date.value|default_if_none:'' }}">
+
+                  {% if form.date.errors %}
+                    <div class="text-danger small mt-2">
+                      <i class="bi bi-exclamation-circle me-1"></i>{{ form.date.errors.0 }}
+                    </div>
+                  {% endif %}
+                </div>
+
+                {# ── Saat Seçimi ── #}
+                <div class="form-section-title">
+                  <i class="bi bi-clock"></i> Saat Seçin
+                </div>
+
+                <div class="mb-4" id="slots-wrapper">
+                  <div class="slots-message">
+                    <i class="bi bi-calendar-event me-2"></i>
+                    Önce yukarıdan bir tarih seçin.
+                  </div>
+                </div>
+
+                <input type="hidden" name="start_time" id="start-time-input"
+                       value="{{ form.start_time.value|default_if_none:'' }}">
+
+                {% if form.start_time.errors %}
+                  <div class="text-danger small mb-3">
+                    <i class="bi bi-exclamation-circle me-1"></i>{{ form.start_time.errors.0 }}
+                  </div>
+                {% endif %}
+
+                {# ── Not ── #}
+                <div class="form-section-title">
+                  <i class="bi bi-chat-left-text"></i> Ek Not
+                </div>
+
+                <div class="mb-4">
+                  <textarea name="note" rows="3"
+                            class="form-control"
+                            placeholder="Eklemek istediğiniz bir not var mı? (Opsiyonel)">{{ form.note.value|default_if_none:'' }}</textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 btn-submit text-white">
+                  <i class="bi bi-calendar-check me-2"></i>Randevuyu Onayla
+                </button>
+
+              </form>
+            </div>{# /col #}
+          </div>{# /row #}
+        </div>{# /card #}
+
       </div>
     </div>
   </div>
 </div>
-
-<script>
-  const slots = document.querySelectorAll('#time-slots .time-slot');
-  const hiddenInput = document.getElementById('start_time_input');
-
-  function markSelected(value) {
-    slots.forEach(s => s.classList.remove('selected'));
-    const btn = Array.from(slots).find(s => s.dataset.time === value);
-    if (btn) btn.classList.add('selected');
-  }
-
-  // Sayfa yeniden yüklenince (hata sonrası) seçili saati koru
-  if (hiddenInput.value) {
-    // hiddenInput.value "10:00:00" gibi gelebilir, "10:00"e kırp
-    const v = hiddenInput.value.slice(0, 5);
-    markSelected(v);
-    hiddenInput.value = v;
-  }
-
-  slots.forEach(slot => {
-    slot.addEventListener('click', () => {
-      const value = slot.dataset.time; // "10:00"
-      hiddenInput.value = value;
-      markSelected(value);
-    });
-  });
-</script>
-
 {% endblock content %}
- 
+
+{% block js_file %}
+<script>
+(function () {
+  "use strict";
+
+  /* ─── Yardımcılar ─── */
+  const TR_MONTHS = ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran",
+                     "Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
+  const TR_DAYS   = ["Pzt","Sal","Çar","Per","Cum","Cmt","Paz"];
+
+  function pad(n){ return String(n).padStart(2,"0"); }
+  function toDateStr(d){ return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; }
+
+  const today      = new Date(); today.setHours(0,0,0,0);
+  let currentYear  = today.getFullYear();
+  let currentMonth = today.getMonth();
+
+  const gridEl      = document.getElementById("calendar-grid");
+  const monthLabel  = document.getElementById("month-label");
+  const dateInput   = document.getElementById("selected-date-input");
+  const slotsWrap   = document.getElementById("slots-wrapper");
+  const timeInput   = document.getElementById("start-time-input");
+
+  /* ─── Takvim render ─── */
+  function renderCalendar(year, month) {
+    monthLabel.textContent = `${TR_MONTHS[month]} ${year}`;
+    gridEl.innerHTML = "";
+
+    // Gün başlıkları 
+    TR_DAYS.forEach(d => {
+      const el = document.createElement("div");
+      el.className = "cal-day-name";
+      el.textContent = d;
+      gridEl.appendChild(el);
+    });
+
+    const firstDay = new Date(year, month, 1);
+    // JS: 0=Pazar → Pzt bazlı offset
+    let startOffset = firstDay.getDay() - 1;
+    if (startOffset < 0) startOffset = 6;
+
+    for (let i = 0; i < startOffset; i++) {
+      const empty = document.createElement("div");
+      empty.className = "cal-day empty";
+      gridEl.appendChild(empty);
+    }
+
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    for (let day = 1; day <= daysInMonth; day++) {
+      const date = new Date(year, month, day);
+      const dateStr = toDateStr(date);
+      const el = document.createElement("div");
+      el.className = "cal-day";
+      el.textContent = day;
+      el.dataset.date = dateStr;
+
+      if (date < today) {
+        el.classList.add("disabled");
+      } else {
+        if (date.getTime() === today.getTime()) el.classList.add("today");
+        if (dateInput.value === dateStr) el.classList.add("selected");
+
+        el.addEventListener("click", () => selectDate(dateStr, el));
+      }
+
+      gridEl.appendChild(el);
+    }
+  }
+
+  /* ─── Tarih seç ─── */
+  function selectDate(dateStr, el) {
+    document.querySelectorAll(".cal-day.selected").forEach(d => d.classList.remove("selected"));
+    el.classList.add("selected");
+    dateInput.value = dateStr;
+    timeInput.value = "";
+    loadSlots(dateStr);
+  }
+
+  /* ─── Slot yükle (AJAX) ─── */
+  function loadSlots(dateStr) {
+    slotsWrap.innerHTML = `
+      <div class="slots-loading">
+        <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+        Saatler yükleniyor…
+      </div>`;
+
+    fetch(`{% url 'available_slots' %}?date=${dateStr}`)
+      .then(r => r.json())
+      .then(data => renderSlots(data, dateStr))
+      .catch(() => {
+        slotsWrap.innerHTML = `
+          <div class="slots-message text-danger">
+            <i class="bi bi-wifi-off me-2"></i>Saatler yüklenemedi, lütfen tekrar deneyin.
+          </div>`;
+      });
+  }
+
+  /* ─── Slot render ─── */
+  function renderSlots(data, dateStr) {
+    if (data.closed) {
+      slotsWrap.innerHTML = `
+        <div class="slots-message text-warning">
+          <i class="bi bi-moon me-2"></i>
+          <strong>${dateStr}</strong> tarihinde klinik kapalıdır. Lütfen başka bir gün seçin.
+        </div>`;
+      return;
+    }
+    if (!data.slots || data.slots.length === 0) {
+      slotsWrap.innerHTML = `
+        <div class="slots-message">
+          <i class="bi bi-calendar-x me-2"></i>Bu gün için uygun saat bulunamadı.
+        </div>`;
+      return;
+    }
+
+    const prevSelected = timeInput.value ? timeInput.value.slice(0,5) : null;
+
+    let html = `<div class="slots-grid">`;
+    data.slots.forEach(slot => {
+      const cls   = slot.available ? "available" : "booked";
+      const icon  = slot.available ? "bi-clock" : "bi-x-circle";
+      const sel   = (slot.available && slot.time === prevSelected) ? " selected" : "";
+      const dis   = slot.available ? "" : "disabled";
+      html += `
+        <button type="button"
+                class="slot-btn ${cls}${sel}"
+                data-time="${slot.time}"
+                ${dis}>
+          <i class="bi ${icon} me-1"></i>${slot.time}
+        </button>`;
+    });
+    html += `</div>`;
+    html += `
+      <div class="slot-legend mt-3">
+        <span><span class="legend-dot" style="background:#bbf7d0;border:1px solid #005a5a"></span>Müsait</span>
+        <span><span class="legend-dot" style="background:#fecaca;border:1px solid #fca5a5"></span>Dolu</span>
+        <span><span class="legend-dot" style="background:#059669"></span>Seçildi</span>
+      </div>`;
+
+    slotsWrap.innerHTML = html;
+
+    // Olay dinleyicileri
+    document.querySelectorAll(".slot-btn.available").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".slot-btn.selected").forEach(b => b.classList.remove("selected"));
+        btn.classList.add("selected");
+        timeInput.value = btn.dataset.time;
+      });
+    });
+  }
+
+  /* ─── Navigasyon ─── */
+  document.getElementById("prev-month").addEventListener("click", () => {
+    currentMonth--;
+    if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+    renderCalendar(currentYear, currentMonth);
+  });
+  document.getElementById("next-month").addEventListener("click", () => {
+    currentMonth++;
+    if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+    renderCalendar(currentYear, currentMonth);
+  });
+
+  /* ─── İlk render ─── */
+  renderCalendar(currentYear, currentMonth);
+
+  // Sayfa yenilenince (hata sonrası) önceki seçimi geri yükle
+  if (dateInput.value) {
+    loadSlots(dateInput.value);
+  }
+
+})();
+</script>
+{% endblock js_file %}

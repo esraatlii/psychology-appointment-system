@@ -1,16 +1,20 @@
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="{% url 'homepage' %}">Anasayfa</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
+<nav class="navbar navbar-expand-lg" id="main-navbar">
+  <div class="container">
+    
+    <a class="navbar-brand" href="{% url 'homepage' %}">
+      <span class="brand-text">Psikoloji <span class="brand-accent">Kliniği</span></span>
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="toggler-icon"></span>
+      <span class="toggler-icon"></span>
+      <span class="toggler-icon"></span>
     </button>
+
     <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav">
+      <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{% url 'aboutme' %}">Hakkımda</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'contact' %}">İletişim</a>
+          <a class="nav-link" href="{% url 'aboutme' %}">Hakkımda</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{% url 'services' %}">Hizmetler</a>
@@ -19,9 +23,129 @@
           <a class="nav-link" href="/#galeri-bolumu">Galeri</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url "appointment" %}">Randevu Al</a>
+          <a class="nav-link" href="{% url 'contact' %}">İletişim</a>
+        </li>
+        <li class="nav-item ms-lg-2">
+          <a class="nav-link nav-cta" href="{% url 'appointment' %}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" viewBox="0 0 16 16" style="margin-right:6px;margin-top:-2px">
+              <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
+            </svg>
+            Randevu Al
+          </a>
         </li>
       </ul>
     </div>
   </div>
 </nav>
+
+<style>
+  #main-navbar {
+    background: #f1f5f4;
+    border-bottom: 1px solid #d1ece8;
+    padding: .9rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+    box-shadow: 0 2px 12px rgba(13,148,136,.07);
+  }
+
+  /* Brand */
+  .navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: #1a1a2e !important;
+    text-decoration: none;
+  }
+  .brand-icon {
+    font-size: 1.3rem;
+    line-height: 1;
+  }
+  .brand-text { color: #374151; }
+  .brand-accent { color: #0d9488; }
+
+  /* Nav linkler */
+  #main-navbar .nav-link {
+    color: #4b5563;
+    font-weight: 500;
+    font-size: .9rem;
+    padding: .45rem .75rem !important;
+    border-radius: .5rem;
+    transition: color .18s, background .18s;
+    position: relative;
+  }
+  #main-navbar .nav-link:hover {
+    color: #0d9488;
+    background: #e6f7f5;
+  }
+  #main-navbar .nav-link.active-page {
+    color: #0d9488;
+    font-weight: 600;
+  }
+
+  /* CTA butonu */
+  .nav-cta {
+    background: #0d9488 !important;
+    color: #fff !important;
+    border-radius: .6rem !important;
+    padding: .45rem 1.1rem !important;
+    font-weight: 600 !important;
+    font-size: .88rem !important;
+    box-shadow: 0 3px 10px rgba(13,148,136,.25);
+    transition: background .18s, box-shadow .18s, transform .15s !important;
+  }
+  .nav-cta:hover {
+    background: #0f766e !important;
+    box-shadow: 0 5px 16px rgba(13,148,136,.35) !important;
+    transform: translateY(-1px);
+    color: #fff !important;
+  }
+
+  /* Hamburger özel */
+  .navbar-toggler {
+    border: none;
+    padding: .4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    outline: none !important;
+    box-shadow: none !important;
+  }
+  .toggler-icon {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: #0d9488;
+    border-radius: 2px;
+    transition: all .25s;
+  }
+
+  /* Mobile */
+  @media (max-width: 991px) {
+    #main-navbar .navbar-collapse {
+      background: #f1f5f4;
+      padding: .75rem 0 1rem;
+      border-top: 1px solid #d1ece8;
+      margin-top: .5rem;
+    }
+    .nav-cta {
+      display: inline-block;
+      margin-top: .25rem;
+    }
+  }
+</style>
+
+<script>
+  (function() {
+    const links = document.querySelectorAll('#main-navbar .nav-link:not(.nav-cta)');
+    links.forEach(link => {
+      if (link.href === window.location.href ||
+          (link.href !== window.location.origin + '/' && window.location.pathname.startsWith(new URL(link.href).pathname))) {
+        link.classList.add('active-page');
+      }
+    });
+  })();
+</script>

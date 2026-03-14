@@ -1,45 +1,165 @@
 {% extends "base.html" %}
 {% load static %}
-{% block page_title %}Hizmetler{% endblock page_title %}
+
+{% block page_title %}Çalışma Alanları{% endblock page_title %}
 
 {% block css_files %}
-    <link rel="stylesheet" href="{% static 'pages/css/style.css' %}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 {% endblock css_files %}
 
 {% block content %}
-<section class="services-page py-5">
-    <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="display-5 fw-bold text-primary">Çalışma Alanları</h2>
-            <div class="header-line mx-auto"></div>
-            <p class="text-muted mt-3 max-w-700 mx-auto">
-                Psikolojik destek sürecinde ele alınabilecek temel konular aşağıda sunulmuştur. 
-                Her süreç danışanın ihtiyacına göre özel olarak yapılandırılır.
-            </p>
-        </div>
-        
-        <div class="row g-4">
-            {% for workspace in workspaces %}
-            <div class="col-md-6 col-lg-4">
-                
-                <div class="service-detail-card h-100 shadow-sm">
-                    <div class="card-img-wrapper">
-                        <div class="gradient-overlay d-flex align-items-center justify-content-center text-white p-4">
-                            <h4 class="fw-bold text-center">{{workspace.title}}</h4>
-                        </div>
-                    </div>
-                    <div class="p-4 bg-white">
-                        <h5 class="fw-bold text-primary mb-2">{{workspace.title}}</h5>
-                        <p class="text-muted small">{{workspace.definition}}</p>
-                        <a href="#" class="text-primary text-decoration-none fw-bold small">Detaylı Bilgi →</a>
-                    </div>
-                </div>
-            </div>
-             {% endfor %}
-            </div>
-    </div>
+
+{# ── Sayfa başlığı ── #}
+<section class="services-hero">
+  <div class="container text-center">
+    <span class="page-tag">Uzmanlık Alanları</span>
+    <h1 class="services-title">Çalışma Alanları</h1>
+    <div class="services-line mx-auto"></div>
+    <p class="services-desc">
+      Psikolojik destek sürecinde ele alınabilecek temel konular aşağıda sunulmuştur.<br>
+      Her süreç, danışanın bireysel ihtiyaçlarına göre özel olarak yapılandırılır.
+    </p>
+  </div>
 </section>
 
+{# ── Kartlar ── #}
+<section class="services-grid-section py-5">
+  <div class="container">
+    <div class="row g-4">
+      {% for workspace in workspaces %}
+        <div class="col-md-6 col-lg-4">
+          <div class="svc-card h-100">
+            <div class="svc-top">
+              <span class="svc-num">{{ forloop.counter|stringformat:"02d" }}</span>
+            </div>
+            <div class="svc-body">
+              <h5 class="svc-title">{{ workspace.title }}</h5>
+              <p class="svc-desc">{{ workspace.definition }}</p>
+            </div>
+            <div class="svc-footer">
+              <a href="{% url 'contact' %}" class="svc-link">
+                Bilgi Al <i class="bi bi-arrow-right ms-1"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      {% empty %}
+        <div class="col-12 text-center py-5">
+          <p class="text-muted">Henüz çalışma alanı eklenmedi.</p>
+        </div>
+      {% endfor %}
+    </div>
 
+    {# CTA #}
+    <div class="text-center mt-5 pt-3">
+      <p class="cta-text">Hangi konuda destek almak istediğinizden emin değil misiniz?</p>
+      <a href="{% url 'appointment' %}" class="btn-main me-3">Randevu Al &rarr;</a>
+      <a href="{% url 'contact' %}" class="btn-outline-main">Bize Yazın</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* ── Hero ── */
+  .services-hero {
+    background: linear-gradient(135deg, #f0fdfa 0%, #f8faf9 60%, #f1f5f4 100%);
+    padding: 4rem 0 3rem;
+  }
+  .page-tag {
+    display: inline-block;
+    font-size: .7rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .15em;
+    color: #0d9488; background: #ccfbf1;
+    padding: .25rem .85rem; border-radius: 2rem;
+    margin-bottom: .85rem;
+  }
+  .services-title {
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    font-weight: 800; color: #1a2e2b; margin-bottom: .5rem;
+  }
+  .services-line {
+    width: 48px; height: 3px;
+    background: linear-gradient(90deg, #0d9488, #5eead4);
+    border-radius: 2px; margin-bottom: 1rem;
+  }
+  .services-desc {
+    color: #64748b; font-size: .93rem;
+    line-height: 1.75; max-width: 580px; margin: 0 auto;
+  }
+
+  /* ── Kartlar ── */
+  .services-grid-section { background: #fff; }
+
+  .svc-card {
+    background: #f8faf9;
+    border: 1.5px solid #e6f0ee;
+    border-radius: 1.1rem;
+    display: flex; flex-direction: column;
+    overflow: hidden;
+    transition: transform .22s, box-shadow .22s, border-color .22s;
+  }
+  .svc-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 14px 36px rgba(13,148,136,.12);
+    border-color: #5eead4;
+  }
+  .svc-top {
+    background: linear-gradient(135deg, #0d9488, #0f766e);
+    padding: 1.25rem 1.5rem .75rem;
+  }
+  .svc-num {
+    font-size: 2rem; font-weight: 800;
+    color: rgba(255,255,255,.25);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .svc-body {
+    padding: 1.25rem 1.5rem;
+    flex: 1;
+  }
+  .svc-title {
+    font-size: 1rem; font-weight: 700;
+    color: #0f766e; margin-bottom: .65rem;
+  }
+  .svc-desc {
+    font-size: .85rem; color: #64748b;
+    line-height: 1.7; margin: 0;
+  }
+  .svc-footer {
+    padding: .85rem 1.5rem;
+    border-top: 1px solid #e6f0ee;
+  }
+  .svc-link {
+    font-size: .82rem; font-weight: 600;
+    color: #0d9488; text-decoration: none;
+    transition: gap .16s;
+    display: inline-flex; align-items: center; gap: .3rem;
+  }
+  .svc-link:hover { color: #0f766e; gap: .55rem; }
+
+  /* CTA */
+  .cta-text {
+    color: #64748b; font-size: .92rem; margin-bottom: 1.25rem;
+  }
+  .btn-main {
+    background: #0d9488; color: #fff;
+    text-decoration: none; font-weight: 700;
+    font-size: .92rem; padding: .75rem 2rem;
+    border-radius: .65rem;
+    box-shadow: 0 4px 14px rgba(13,148,136,.3);
+    transition: background .18s, transform .15s;
+    display: inline-block;
+  }
+  .btn-main:hover { background: #0f766e; transform: translateY(-2px); color: #fff; }
+  .btn-outline-main {
+    background: #fff; color: #1a2e2b;
+    text-decoration: none; font-weight: 600;
+    font-size: .92rem; padding: .75rem 2rem;
+    border-radius: .65rem; border: 1.5px solid #d1ece8;
+    transition: border-color .18s, color .18s, transform .15s;
+    display: inline-block;
+  }
+  .btn-outline-main:hover { border-color: #0d9488; color: #0d9488; transform: translateY(-2px); }
+</style>
 
 {% endblock content %}

@@ -1,63 +1,214 @@
 {% load static %}
-<footer class="py-5" style="background-color: #f7f3ee; border-top: 1px solid #e0e0e0;">
+
+<footer id="main-footer">
+  <div class="footer-top">
     <div class="container">
-        <div class="text-center mb-5">
-            
-            <p class="mt-2 text-muted fw-bold">Psikolog & Uzm. Aile Danışmanı</p>
-            <hr class="max-w-700 mx-auto">
-        </div>
+      <div class="row g-5">
 
-        <div class="row g-4">
-            <div class="col-lg-4 col-md-6">
-                <h5 class="fw-bold mb-4" style="color: #005a5a;">İletişim Bilgilerimiz</h5>
-                {% for psychologist in psychologists %}
-                <ul class="list-unstyled">
-                    <li class="d-flex mb-3">
-                        <i class="fas fa-map-marker-alt me-3 mt-1" style="color: #005a5a;"></i>
-                        <span class="small text-muted">{{psychologist.city}}</span>
-                    </li>
-                    <li class="d-flex mb-3 border-top pt-2">
-                        <i class="fas fa-mobile-alt me-3" style="color: #005a5a;"></i>
-                        <span class="small text-muted">{{psychologist.phone}}</span>
-                    </li>
-                    <li class="d-flex mb-3 border-top pt-2">
-                        <i class="fas fa-envelope me-3" style="color: #005a5a;"></i>
-                        <span class="small text-muted">{{psychologist.email}}</span>
-                    </li>
-                </ul>
-                {% endfor %}
-            </div>
-
-            <div class="col-lg-4 col-md-6 text-md-center">
-                <h5 class="fw-bold mb-4" style="color: #005a5a;">Hızlı Erişim</h5>
-                <ul class="list-unstyled">
-                    <li class="mb-2"><a href="/" class="text-decoration-none text-muted small hover-green">Anasayfa</a></li>
-                    <li class="mb-2"><a href="{% url "aboutme" %}" class="text-decoration-none text-muted small hover-green">Hakkımda</a></li>
-                    <li class="mb-2"><a href="{% url "services" %}" class="text-decoration-none text-muted small hover-green">Çalışma Alanlarım</a></li>
-                    <li class="mb-2"><a href="#galeri-bolumu" class="text-decoration-none text-muted small hover-green">Galeri</a></li>
-                    <li class="mb-2"><a href="{% url "contact" %}" class="text-decoration-none text-muted small hover-green">İletişim</a></li>
-                </ul>
-            </div>
-
-            <div class="col-lg-4">
-                <h5 class="fw-bold mb-4 text-lg-end" style="color: #005a5a;">Çalışma Saatlerimiz</h5>
-                {% for wh in working_hours %}
-                <div class="small text-muted">
-                    <div class="d-flex justify-content-between mb-2 border-bottom pb-1">
-                        <span>{{wh.get_day_display}}:</span>
-                        {% if wh.is_closed %}
-                            <span class="text-danger">Kapalı</span>
-                        {% elif wh.open_time and wh.close_time %}
-                            {{ wh.open_time|time:"H:i" }} - {{ wh.close_time|time:"H:i" }}
-                        {% else %}
-                            <span class="text-danger">Kapalı</span>
-                        {% endif %}
-
-                    </div>
-                    
-                </div>
+        {# ── Sol: İletişim ── #}
+        <div class="col-lg-4 col-md-6">
+          <h6 class="footer-heading">İletişim</h6>
+          {% for psychologist in psychologists %}
+          <ul class="footer-list">
+            <li>
+              <span class="footer-icon">📍</span>
+              <span>{{ psychologist.city }}</span>
+            </li>
+            <li>
+              <span class="footer-icon">📞</span>
+              <span>{{ psychologist.phone }}</span>
+            </li>
+            <li>
+              <span class="footer-icon">✉️</span>
+              <span>{{ psychologist.email }}</span>
+            </li>
+          </ul>
           {% endfor %}
-            </div>
+
+          <a href="{% url 'appointment' %}" class="footer-cta">
+            Randevu Al &rarr;
+          </a>
         </div>
+
+        {# ── Orta: Hızlı Erişim ── #}
+        <div class="col-lg-4 col-md-6">
+          <h6 class="footer-heading">Hızlı Erişim</h6>
+          <ul class="footer-nav-list">
+            <li><a href="/">Anasayfa</a></li>
+            <li><a href="{% url 'aboutme' %}">Hakkımda</a></li>
+            <li><a href="{% url 'services' %}">Çalışma Alanlarım</a></li>
+            <li><a href="/#galeri-bolumu">Galeri</a></li>
+            <li><a href="{% url 'contact' %}">İletişim</a></li>
+          </ul>
+        </div>
+
+        {# ── Sağ: Çalışma Saatleri ── #}
+        <div class="col-lg-4">
+          <h6 class="footer-heading">Çalışma Saatleri</h6>
+          <ul class="footer-hours">
+            {% for wh in working_hours %}
+            <li class="{% if wh.is_closed %}closed{% endif %}">
+              <span class="day">{{ wh.get_day_display }}</span>
+              <span class="hours">
+                {% if wh.is_closed %}
+                  Kapalı
+                {% elif wh.open_time and wh.close_time %}
+                  {{ wh.open_time|time:"H:i" }} – {{ wh.close_time|time:"H:i" }}
+                {% else %}
+                  Kapalı
+                {% endif %}
+              </span>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+
+      </div>
     </div>
+  </div>
+
+  <div class="footer-bottom">
+    <div class="container">
+      <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+        <p class="mb-0">© {{ request.resolver_match.view_name|default:"2025" }} — Tüm hakları saklıdır.</p>
+        <p class="mb-0 footer-tagline">Psikolog & Uzm. Aile Danışmanı</p>
+      </div>
+    </div>
+  </div>
 </footer>
+
+<style>
+  #main-footer {
+    font-family: inherit;
+  }
+
+  /* ── Üst alan ── */
+  .footer-top {
+    background: #1a2e2b;
+    padding: 3.5rem 0 2.5rem;
+    color: #cbd5e1;
+  }
+
+  /* ── Başlıklar ── */
+  .footer-heading {
+    font-size: .72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .14em;
+    color: #5eead4;
+    margin-bottom: 1.25rem;
+    padding-bottom: .6rem;
+    border-bottom: 1px solid #2d4a45;
+  }
+
+  /* ── İletişim listesi ── */
+  .footer-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.5rem;
+  }
+  .footer-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: .65rem;
+    font-size: .85rem;
+    color: #94a3b8;
+    padding: .45rem 0;
+    border-bottom: 1px solid #243b37;
+  }
+  .footer-list li:last-child { border-bottom: none; }
+  .footer-icon { font-size: 1rem; flex-shrink: 0; margin-top: .05rem; }
+
+  /* ── CTA butonu ── */
+  .footer-cta {
+    display: inline-block;
+    margin-top: .25rem;
+    background: #0d9488;
+    color: #fff !important;
+    text-decoration: none;
+    font-size: .82rem;
+    font-weight: 600;
+    padding: .5rem 1.2rem;
+    border-radius: .5rem;
+    transition: background .18s, transform .15s;
+    box-shadow: 0 3px 10px rgba(13,148,136,.3);
+  }
+  .footer-cta:hover {
+    background: #0f766e;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 14px rgba(13,148,136,.4);
+  }
+
+  /* ── Hızlı erişim nav ── */
+  .footer-nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .footer-nav-list li { margin-bottom: .1rem; }
+  .footer-nav-list a {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    color: #94a3b8;
+    text-decoration: none;
+    font-size: .87rem;
+    padding: .4rem .5rem;
+    border-radius: .4rem;
+    transition: color .16s, background .16s, padding-left .16s;
+  }
+  .footer-nav-list a::before {
+    content: "›";
+    color: #0d9488;
+    font-size: 1.1rem;
+    line-height: 1;
+    opacity: 0;
+    transition: opacity .16s;
+  }
+  .footer-nav-list a:hover {
+    color: #e2e8f0;
+    background: #243b37;
+    padding-left: .85rem;
+  }
+  .footer-nav-list a:hover::before { opacity: 1; }
+
+  /* ── Çalışma saatleri ── */
+  .footer-hours {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .footer-hours li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: .84rem;
+    padding: .4rem 0;
+    border-bottom: 1px solid #243b37;
+    color: #94a3b8;
+    transition: background .15s;
+  }
+  .footer-hours li:last-child { border-bottom: none; }
+  .footer-hours .day { color: #cbd5e1; font-weight: 500; }
+  .footer-hours .hours { font-variant-numeric: tabular-nums; }
+  .footer-hours li.closed .hours { color: #f87171; font-size: .78rem; }
+
+  /* ── Alt şerit ── */
+  .footer-bottom {
+    background: #111f1d;
+    padding: 1rem 0;
+    font-size: .78rem;
+    color: #64748b;
+  }
+  .footer-tagline {
+    color: #5eead4;
+    font-weight: 500;
+    font-size: .78rem;
+  }
+
+  /* Mobile */
+  @media (max-width: 767px) {
+    .footer-top { padding: 2.5rem 0 2rem; }
+    .footer-nav-list a { padding: .5rem .25rem; }
+  }
+</style>
