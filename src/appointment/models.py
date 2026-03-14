@@ -31,7 +31,11 @@ class Appointment(models.Model):
         verbose_name_plural = "Randevular"
         ordering = ["-created_at"]
         constraints = [
-            models.UniqueConstraint(fields=["date", "start_time"], name="unique_appointment_slot")
+            models.UniqueConstraint(
+                fields=["date", "start_time"],
+                name="unique_appointment_slot",
+                violation_error_message="Bu tarih ve saat için zaten bir randevu bulunmaktadır."
+            )
         ]
 
     def save(self, *args, **kwargs):
